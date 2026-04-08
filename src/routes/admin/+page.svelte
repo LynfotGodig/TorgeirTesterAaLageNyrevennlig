@@ -35,6 +35,7 @@
 	let difficulty = $state('Enkel');
 	let category = $state('Middag');
 	let imageUrl = $state('');
+	let uploading = $state(false);
 	let ingredients: Ingredient[] = $state([]);
 	let saving = $state(false);
 	let saved = $state(false);
@@ -87,6 +88,20 @@
 		if (!confirm('Sikker på at du vil slette denne oppskriften?')) return;
 		await supabase.from('recipes').delete().eq('id', id);
 		recipes = recipes.filter(r => r.id !== id);
+	}
+
+	async function uploadImage(e: Event) {
+		const file = (e.target as HTMLInputElement).files?.[0];
+		if (!file) return;
+		uploading = true;
+		const ext = file.name.split('.').pop();
+		const path = `${crypto.randomUUID()}.${ext}`;
+		const { error } = await supabase.storage.from('recipe-images').upload(path, file);
+		if (!error) {
+			const { data } = supabase.storage.from('recipe-images').getPublicUrl(path);
+			imageUrl = data.publicUrl;
+		}
+		uploading = false;
 	}
 
 	function selectFood(food: Food) {
@@ -194,13 +209,23 @@
 
 				<!-- Image -->
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-1">Bilde (URL)</label>
-					<input bind:value={imageUrl} class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="https://..." />
-					{#if imageUrl}
-						<img src={imageUrl} alt="Forhåndsvisning" class="mt-2 w-full h-48 object-cover rounded-xl border border-gray-100" onerror={(e) => (e.currentTarget as HTMLImageElement).style.display='none'} />
-					{:else}
-						<div class="mt-2 w-full h-48 bg-green-50 rounded-xl border border-dashed border-gray-200 flex items-center justify-center text-gray-400 text-sm">Ingen bilde valgt</div>
-					{/if}
+					<label class="block text-sm font-medium text-gray-700 mb-1">Bilde</label>
+					<label class="flex items-center justify-center w-full h-48 rounded-xl border-2 border-dashed border-gray-200 cursor-pointer hover:border-green-400 transition overflow-hidden relative bg-green-50">
+						{#if imageUrl}
+							<img src={imageUrl} alt="Forhåndsvisning" class="w-full h-full object-cover" />
+							<div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition">
+								<span class="text-white text-sm font-medium">Bytt bilde</span>
+							</div>
+						{:else if uploading}
+							<span class="text-gray-400 text-sm">Laster opp...</span>
+						{:else}
+							<div class="text-center text-gray-400">
+								<p class="text-3xl mb-1">📷</p>
+								<p class="text-sm">Klikk for å laste opp bilde</p>
+							</div>
+						{/if}
+						<input type="file" accept="image/*" class="hidden" onchange={uploadImage} />
+					</label>
 				</div>
 
 				<div class="grid grid-cols-2 gap-4">
