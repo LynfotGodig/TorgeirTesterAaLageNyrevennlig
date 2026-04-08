@@ -197,7 +197,7 @@
 					<label class="block text-sm font-medium text-gray-700 mb-1">Bilde (URL)</label>
 					<input bind:value={imageUrl} class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="https://..." />
 					{#if imageUrl}
-						<img src={imageUrl} alt="Forhåndsvisning" class="mt-2 w-full h-48 object-cover rounded-xl border border-gray-100" onerror="this.style.display='none'" />
+						<img src={imageUrl} alt="Forhåndsvisning" class="mt-2 w-full h-48 object-cover rounded-xl border border-gray-100" onerror={(e) => (e.currentTarget as HTMLImageElement).style.display='none'} />
 					{:else}
 						<div class="mt-2 w-full h-48 bg-green-50 rounded-xl border border-dashed border-gray-200 flex items-center justify-center text-gray-400 text-sm">Ingen bilde valgt</div>
 					{/if}
