@@ -39,7 +39,7 @@
 
 	function selectFood(food: Food) {
 		selectedFood = food;
-		foodSearch = food.name;
+		foodSearch = '';
 	}
 
 	function addIngredient() {
