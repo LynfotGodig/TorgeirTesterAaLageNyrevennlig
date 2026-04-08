@@ -7,14 +7,18 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<nav class="bg-green-700 text-white px-6 py-4 flex items-center justify-between">
-	<a href="/" class="text-xl font-bold">🥗 Nyrevennlig Mat</a>
-	<div class="flex gap-4 text-sm">
-		<a href="/" class="hover:underline">Oppskrifter</a>
-		<a href="/admin" class="hover:underline">Admin</a>
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+	<div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+		<a href="/" class="flex items-center gap-2 font-bold text-lg text-green-800">
+			<span class="bg-green-700 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">N</span>
+			Nyrevennlig
+		</a>
+		<nav class="hidden md:flex items-center gap-6 text-sm text-gray-600">
+			<a href="/" class="hover:text-green-700">Oppskrifter</a>
+			<a href="/matvarer" class="hover:text-green-700">Matvarer</a>
+			<a href="/admin" class="hover:text-green-700">Admin</a>
+		</nav>
 	</div>
-</nav>
+</header>
 
-<main class="max-w-5xl mx-auto px-4 py-8">
-	{@render children()}
-</main>
+{@render children()}
