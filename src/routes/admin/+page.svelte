@@ -140,7 +140,7 @@
 				<input
 					bind:value={foodSearch}
 					class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-					placeholder="Søk etter matvare..."
+					placeholder={foods.length > 0 ? `Søk blant ${foods.length} matvarer...` : 'Laster matvarer...'}
 				/>
 				{#if filteredFoods.length > 0}
 					<ul class="absolute z-10 bg-white border border-gray-200 rounded-xl shadow-lg w-full mt-1 max-h-52 overflow-y-auto">

@@ -60,6 +60,23 @@
 		if (value <= high) return { label: 'Moderat', color: 'text-yellow-600 bg-yellow-50' };
 		return { label: 'Høyt', color: 'text-red-600 bg-red-50' };
 	}
+
+	let nutrition = $derived(() => {
+		const s = recipe?.servings ?? 1;
+		const sodium = total('sodium') / s;
+		const potassium = total('potassium') / s;
+		const phosphorus = total('phosphorus') / s;
+		return {
+			sodium, potassium, phosphorus,
+			energy: total('energy_kcal') / s,
+			protein: total('protein') / s,
+			fat: total('fat') / s,
+			carbs: total('carbohydrates') / s,
+			naLevel: level(sodium, 200, 400),
+			kLevel: level(potassium, 400, 800),
+			pLevel: level(phosphorus, 200, 400),
+		};
+	});
 </script>
 
 {#if loading}
@@ -129,54 +146,43 @@
 				<div class="bg-gray-50 rounded-2xl p-5 sticky top-24">
 					<h2 class="font-semibold text-gray-800 mb-4">Næringsverdier <span class="text-xs font-normal text-gray-400">per porsjon</span></h2>
 
-					{@const sodium = total('sodium') / recipe.servings}
-					{@const potassium = total('potassium') / recipe.servings}
-					{@const phosphorus = total('phosphorus') / recipe.servings}
-					{@const energy = total('energy_kcal') / recipe.servings}
-					{@const protein = total('protein') / recipe.servings}
-					{@const fat = total('fat') / recipe.servings}
-					{@const carbs = total('carbohydrates') / recipe.servings}
-
 					<!-- Key kidney nutrients -->
 					<div class="space-y-3 mb-4">
-						{@const naLevel = level(sodium, 200, 400)}
 						<div class="flex items-center justify-between">
 							<div>
 								<p class="text-sm font-medium text-gray-700">Natrium</p>
-								<p class="text-lg font-bold text-gray-900">{sodium.toFixed(0)} <span class="text-xs font-normal text-gray-400">mg</span></p>
+								<p class="text-lg font-bold text-gray-900">{nutrition().sodium.toFixed(0)} <span class="text-xs font-normal text-gray-400">mg</span></p>
 							</div>
-							<span class="text-xs px-2 py-1 rounded-full {naLevel.color}">{naLevel.label}</span>
+							<span class="text-xs px-2 py-1 rounded-full {nutrition().naLevel.color}">{nutrition().naLevel.label}</span>
 						</div>
-						{@const kLevel = level(potassium, 400, 800)}
 						<div class="flex items-center justify-between">
 							<div>
 								<p class="text-sm font-medium text-gray-700">Kalium</p>
-								<p class="text-lg font-bold text-gray-900">{potassium.toFixed(0)} <span class="text-xs font-normal text-gray-400">mg</span></p>
+								<p class="text-lg font-bold text-gray-900">{nutrition().potassium.toFixed(0)} <span class="text-xs font-normal text-gray-400">mg</span></p>
 							</div>
-							<span class="text-xs px-2 py-1 rounded-full {kLevel.color}">{kLevel.label}</span>
+							<span class="text-xs px-2 py-1 rounded-full {nutrition().kLevel.color}">{nutrition().kLevel.label}</span>
 						</div>
-						{@const pLevel = level(phosphorus, 200, 400)}
 						<div class="flex items-center justify-between">
 							<div>
 								<p class="text-sm font-medium text-gray-700">Fosfor</p>
-								<p class="text-lg font-bold text-gray-900">{phosphorus.toFixed(0)} <span class="text-xs font-normal text-gray-400">mg</span></p>
+								<p class="text-lg font-bold text-gray-900">{nutrition().phosphorus.toFixed(0)} <span class="text-xs font-normal text-gray-400">mg</span></p>
 							</div>
-							<span class="text-xs px-2 py-1 rounded-full {pLevel.color}">{pLevel.label}</span>
+							<span class="text-xs px-2 py-1 rounded-full {nutrition().pLevel.color}">{nutrition().pLevel.label}</span>
 						</div>
 					</div>
 
 					<div class="border-t border-gray-200 pt-4 space-y-2 text-sm">
 						<div class="flex justify-between text-gray-600">
-							<span>Kalorier</span><span class="font-medium">{energy.toFixed(0)} kcal</span>
+							<span>Kalorier</span><span class="font-medium">{nutrition().energy.toFixed(0)} kcal</span>
 						</div>
 						<div class="flex justify-between text-gray-600">
-							<span>Protein</span><span class="font-medium">{protein.toFixed(1)} g</span>
+							<span>Protein</span><span class="font-medium">{nutrition().protein.toFixed(1)} g</span>
 						</div>
 						<div class="flex justify-between text-gray-600">
-							<span>Fett</span><span class="font-medium">{fat.toFixed(1)} g</span>
+							<span>Fett</span><span class="font-medium">{nutrition().fat.toFixed(1)} g</span>
 						</div>
 						<div class="flex justify-between text-gray-600">
-							<span>Karbohydrater</span><span class="font-medium">{carbs.toFixed(1)} g</span>
+							<span>Karbohydrater</span><span class="font-medium">{nutrition().carbs.toFixed(1)} g</span>
 						</div>
 					</div>
 				</div>
